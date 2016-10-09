@@ -1,5 +1,7 @@
 package ee.iglu.dao;
 
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 
 public class ConstructorRowMapperTest {
@@ -9,4 +11,8 @@ public class ConstructorRowMapperTest {
 		new ConstructorRowMapper<>();
 	}
 
+	@Test
+	public void failing_test() {
+		fail("EPIC FAIL!");
+	}
 }
