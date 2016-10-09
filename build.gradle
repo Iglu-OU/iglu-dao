@@ -44,6 +44,10 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-jdbc',
             'org.springframework.boot:spring-boot-starter-test',
     )
+
+    testRuntime(
+            'org.hsqldb:hsqldb'
+    )
 }
 
 task wrapper(type: Wrapper) {
