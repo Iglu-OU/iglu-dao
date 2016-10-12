@@ -38,6 +38,11 @@ dependencies {
 
     compile(
             'org.springframework:spring-jdbc',
+            'org.slf4j:slf4j-api'
+    )
+
+    testCompileOnly(
+            'org.projectlombok:lombok',
     )
 
     testCompile(
