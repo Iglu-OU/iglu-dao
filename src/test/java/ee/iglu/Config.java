@@ -1,20 +1,24 @@
 package ee.iglu;
 
+import javax.sql.DataSource;
+
 import org.springframework.boot.SpringBootConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 
 @SpringBootConfiguration
 public class Config {
 
 	@Bean
-	JdbcTemplate jdbcTemplate(){
-		EmbeddedDatabase dataSource = new EmbeddedDatabaseBuilder()
+	DataSource dataSource() {
+		return new EmbeddedDatabaseBuilder()
 				.generateUniqueName(true)
 				.build();
+	}
 
+	@Bean
+	JdbcTemplate jdbcTemplate(DataSource dataSource) {
 		return new JdbcTemplate(dataSource);
 	}
 }
