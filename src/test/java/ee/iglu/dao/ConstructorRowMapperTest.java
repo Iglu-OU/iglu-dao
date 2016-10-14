@@ -24,7 +24,7 @@ public class ConstructorRowMapperTest {
 	private JdbcTemplate jdbcTemplate;
 
 	@Test
-	public void row_mapper_returns_objects() {
+	public void row_mapper_returns_populated_objects() {
 		ConstructorRowMapper<SimpleRow> rowMapper = new ConstructorRowMapper<>(SimpleRow.class);
 
 		List<SimpleRow> rows = jdbcTemplate.query("SELECT * FROM simple", rowMapper);
@@ -32,6 +32,8 @@ public class ConstructorRowMapperTest {
 		assertThat(rows, hasSize(greaterThan(0)));
 		SimpleRow row = rows.get(0);
 		assertThat(row, notNullValue());
+		assertThat(row.getId(), equalTo(10L));
+		assertThat(row.getText(), equalTo("lorem ipsum..."));
 	}
 
 	@Test
