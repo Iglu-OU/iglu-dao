@@ -2,11 +2,9 @@ package ee.iglu.dao;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,9 +34,4 @@ public class ConstructorRowMapperTest {
 		assertThat(row.getText(), equalTo("lorem ipsum..."));
 	}
 
-	@Test
-	@Ignore
-	public void failing_test() {
-		fail("EPIC FAIL!");
-	}
 }
