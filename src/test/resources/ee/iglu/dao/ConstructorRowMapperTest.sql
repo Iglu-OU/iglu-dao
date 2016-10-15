@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS simple;
+
 CREATE TABLE simple (
   id   BIGINT,
   text CLOB

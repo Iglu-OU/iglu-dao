@@ -2,6 +2,7 @@ package ee.iglu.dao;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -34,4 +35,18 @@ public class ConstructorRowMapperTest {
 		assertThat(row.getText(), equalTo("lorem ipsum..."));
 	}
 
+	@Test
+	public void check_fully_populated() {
+		ConstructorRowMapper<SimpleRow> rowMapper = new ConstructorRowMapper<>(SimpleRow.class);
+
+		try {
+			jdbcTemplate.query("SELECT id, text AS columnname FROM simple", rowMapper);
+		} catch (Exception e) {
+			assertThat(e.getMessage(), containsString("missing properties: [text]"));
+			assertThat(e.getMessage(), containsString("excess columns: [columnname]"));
+			return;
+		}
+
+		fail("Expected exception because of checkFullyPopulated failure");
+	}
 }
