@@ -37,9 +37,14 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 	private final Class<?>[] parameterTypes;
 	private final String[] parameterNames;
 
+	private int[] columnIndexes;
+
 	@Override
 	public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-		int[] columnIndexes = createParameterToColumnMap(rs.getMetaData(), parameterNames);
+		if (columnIndexes == null) {
+			columnIndexes = createParameterToColumnMap(rs.getMetaData(), parameterNames);
+		}
+
 		Object[] arguments = getArguments(rs, columnIndexes, parameterTypes);
 
 		try {
