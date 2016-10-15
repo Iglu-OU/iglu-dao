@@ -1,10 +1,10 @@
 package ee.iglu.dao;
 
-import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
 
-import org.junit.Ignore;
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,17 +22,16 @@ public class ConstructorRowMapperTest {
 	private JdbcTemplate jdbcTemplate;
 
 	@Test
-	public void row_mapper_is_executed() {
-		ConstructorRowMapper<SimpleRow> rowMapper = new ConstructorRowMapper<>();
+	public void row_mapper_returns_populated_objects() {
+		ConstructorRowMapper<SimpleRow> rowMapper = new ConstructorRowMapper<>(SimpleRow.class);
 
-		jdbcTemplate.query("SELECT * FROM simple", rowMapper);
+		List<SimpleRow> rows = jdbcTemplate.query("SELECT * FROM simple", rowMapper);
 
-		assertThat(rowMapper.getRowCount(), greaterThan(0));
+		assertThat(rows, hasSize(greaterThan(0)));
+		SimpleRow row = rows.get(0);
+		assertThat(row, notNullValue());
+		assertThat(row.getId(), equalTo(10L));
+		assertThat(row.getText(), equalTo("lorem ipsum..."));
 	}
 
-	@Test
-	@Ignore
-	public void failing_test() {
-		fail("EPIC FAIL!");
-	}
 }
