@@ -12,25 +12,39 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import com.google.common.base.Throwables;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 
 @Slf4j
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConstructorRowMapper<T> implements RowMapper<T> {
-	private final Class<T> rowClass;
+
+	public ConstructorRowMapper(Class<T> rowClass) {
+		this(findConstructor(rowClass));
+	}
+
+	private ConstructorRowMapper(Constructor<T> constructor) {
+		this(
+				constructor,
+				constructor.getParameterTypes(),
+				constructor.getAnnotation(ConstructorProperties.class).value());
+	}
+
+	private final Constructor<T> constructor;
+	private final Class<?>[] parameterTypes;
+	private final String[] parameterNames;
+
+	private int[] columnIndexes;
 
 	@Override
 	public T mapRow(ResultSet rs, int rowNum) throws SQLException {
-		log.debug("mapping row nr {}", rowNum);
+		if (columnIndexes == null) {
+			columnIndexes = createParameterToColumnMap(rs.getMetaData(), parameterNames);
+		}
 
-		Constructor<T> constructor = findConstructor(rowClass);
-		Class<?>[] parameterTypes = constructor.getParameterTypes();
-
-		String[] parameterNames = constructor.getAnnotation(ConstructorProperties.class).value();
-		int[] columnIndexes = createParameterToColumnMap(rs.getMetaData(), parameterNames);
 		Object[] arguments = getArguments(rs, columnIndexes, parameterTypes);
 
 		try {
