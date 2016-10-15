@@ -1,7 +1,6 @@
 package ee.iglu.dao;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
 
 import java.beans.ConstructorProperties;
 import java.lang.reflect.Constructor;
@@ -63,6 +62,7 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 		int parameterCount = parameterNames.length;
 
 		BitSet mappedParameters = new BitSet();
+		BitSet mappedColumns = new BitSet();
 
 		int[] columnIndexes = new int[parameterCount];
 		for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
@@ -71,17 +71,25 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 			if (parameterIndex != -1) {
 				columnIndexes[parameterIndex] = columnIndex;
 				mappedParameters.set(parameterIndex);
+				mappedColumns.set(columnIndex);
 			}
 		}
 
-		checkFullyPopulated(mappedParameters, parameterCount);
+		checkFullyPopulated(mappedParameters, parameterCount, mappedColumns, columnCount, metaData);
 
 		return columnIndexes;
 	}
 
-	private void checkFullyPopulated(BitSet mappedParameters, int parameterCount) {
+	private void checkFullyPopulated(
+			BitSet mappedParameters,
+			int parameterCount,
+			BitSet mappedColumns,
+			int columnCount,
+			ResultSetMetaData metaData) throws SQLException {
+
 		int mappedParameterCount = mappedParameters.cardinality();
-		if (mappedParameterCount == parameterCount) {
+		int mappedColumnCount = mappedColumns.cardinality();
+		if (mappedParameterCount == parameterCount && mappedColumnCount == columnCount) {
 			return;
 		}
 
@@ -90,11 +98,22 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 			missingParameters.add(parameterNames[i]);
 		}
 
-		checkState(
-				false,
-				"%s not fully populated, missing properties: %s",
-				constructor.getDeclaringClass().getSimpleName(),
-				missingParameters);
+		List<String> excessColumns = new ArrayList<>(columnCount - mappedColumnCount);
+		for (int i = mappedColumns.nextClearBit(1); i <= columnCount; i = mappedColumns.nextClearBit(i + 1)) {
+			excessColumns.add(getParameterNameForColumn(metaData, i));
+		}
+
+		String msg = String.format("%s: no 1-to-1 mapping from ResultSet", constructor.getDeclaringClass().getSimpleName());
+
+		if (!missingParameters.isEmpty()) {
+			msg += String.format(", missing properties: %s", missingParameters);
+		}
+
+		if (!excessColumns.isEmpty()) {
+			msg += String.format(", excess columns: %s", excessColumns);
+		}
+
+		throw new IllegalStateException(msg);
 	}
 
 	private String getParameterNameForColumn(ResultSetMetaData metaData, int columnIndex) throws SQLException {

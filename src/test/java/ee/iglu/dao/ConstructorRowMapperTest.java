@@ -40,9 +40,10 @@ public class ConstructorRowMapperTest {
 		ConstructorRowMapper<SimpleRow> rowMapper = new ConstructorRowMapper<>(SimpleRow.class);
 
 		try {
-			jdbcTemplate.query("SELECT id FROM simple", rowMapper);
+			jdbcTemplate.query("SELECT id, text AS columnname FROM simple", rowMapper);
 		} catch (Exception e) {
 			assertThat(e.getMessage(), containsString("missing properties: [text]"));
+			assertThat(e.getMessage(), containsString("excess columns: [columnname]"));
 			return;
 		}
 
