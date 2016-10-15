@@ -1,11 +1,15 @@
 package ee.iglu.dao;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@RequiredArgsConstructor
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class SimpleRow {
-	private final Long id;
-	private final String text;
+	private Long id;
+	private String text;
 }
