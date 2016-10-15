@@ -1,6 +1,7 @@
 package ee.iglu.dao;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.beans.ConstructorProperties;
 import java.lang.reflect.Constructor;
@@ -8,8 +9,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Locale;
+import java.util.*;
 
 import com.google.common.base.Throwables;
 import lombok.AccessLevel;
@@ -62,16 +62,39 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 		int columnCount = metaData.getColumnCount();
 		int parameterCount = parameterNames.length;
 
+		BitSet mappedParameters = new BitSet();
+
 		int[] columnIndexes = new int[parameterCount];
 		for (int columnIndex = 1; columnIndex <= columnCount; columnIndex++) {
 			String parameterName = getParameterNameForColumn(metaData, columnIndex);
 			int parameterIndex = findParameterIndex(parameterNames, parameterName);
 			if (parameterIndex != -1) {
 				columnIndexes[parameterIndex] = columnIndex;
+				mappedParameters.set(parameterIndex);
 			}
 		}
 
+		checkFullyPopulated(mappedParameters, parameterCount);
+
 		return columnIndexes;
+	}
+
+	private void checkFullyPopulated(BitSet mappedParameters, int parameterCount) {
+		int mappedParameterCount = mappedParameters.cardinality();
+		if (mappedParameterCount == parameterCount) {
+			return;
+		}
+
+		List<String> missingParameters = new ArrayList<>(parameterCount - mappedParameterCount);
+		for (int i = mappedParameters.nextClearBit(0); i < parameterCount; i = mappedParameters.nextClearBit(i + 1)) {
+			missingParameters.add(parameterNames[i]);
+		}
+
+		checkState(
+				false,
+				"%s not fully populated, missing properties: %s",
+				constructor.getDeclaringClass().getSimpleName(),
+				missingParameters);
 	}
 
 	private String getParameterNameForColumn(ResultSetMetaData metaData, int columnIndex) throws SQLException {
