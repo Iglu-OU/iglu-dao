@@ -10,6 +10,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
 
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Throwables;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -118,7 +119,9 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 
 	private String getParameterNameForColumn(ResultSetMetaData metaData, int columnIndex) throws SQLException {
 		String columnName = JdbcUtils.lookupColumnName(metaData, columnIndex);
-		return columnName.toLowerCase(Locale.US);
+		String lowerUnderscore = columnName.toLowerCase(Locale.US);
+		String lowerCamel = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, lowerUnderscore);
+		return lowerCamel;
 	}
 
 	private int findParameterIndex(String[] parameterNames, String columnName) {

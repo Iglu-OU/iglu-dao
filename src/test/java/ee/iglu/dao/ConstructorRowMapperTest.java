@@ -49,4 +49,16 @@ public class ConstructorRowMapperTest {
 
 		fail("Expected exception because of checkFullyPopulated failure");
 	}
+
+	@Test
+	public void test_complex_row() {
+		ConstructorRowMapper<ComplexRow> rowMapper = new ConstructorRowMapper<>(ComplexRow.class);
+		List<ComplexRow> result = jdbcTemplate.query("SELECT * FROM complex", rowMapper);
+		assertThat(result, hasSize(1));
+
+		ComplexRow row = result.get(0);
+		assertThat(row.getId(), equalTo(7));
+		assertThat(row.getText(), equalTo("lorem ipsum..."));
+		assertThat(row.isMultiPartName(), equalTo(true));
+	}
 }

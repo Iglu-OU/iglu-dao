@@ -5,6 +5,16 @@ CREATE TABLE simple (
   text CLOB
 );
 
+DROP TABLE IF EXISTS complex;
+
+CREATE TABLE complex (
+  id              BIGINT,
+  text            CLOB,
+  multi_part_name BOOLEAN
+);
+
+INSERT INTO complex VALUES (7, 'lorem ipsum...', TRUE);
+
 INSERT INTO simple VALUES (10, 'lorem ipsum...');
 INSERT INTO simple VALUES (10, 'lorem ipsum...');
 INSERT INTO simple VALUES (10, 'lorem ipsum...');
