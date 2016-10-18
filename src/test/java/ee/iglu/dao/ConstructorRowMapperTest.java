@@ -61,7 +61,7 @@ public class ConstructorRowMapperTest {
 		assertThat(result, hasSize(1));
 
 		ComplexRow row = result.get(0);
-		assertThat(row.getId(), equalTo(7));
+		assertThat(row.getId(), equalTo(new CustomWrapper(7L)));
 		assertThat(row.getText(), equalTo("lorem ipsum..."));
 		assertThat(row.isMultiPartName(), equalTo(true));
 		assertThat(row.getUuid(), equalTo(UUID.fromString("b879edb0-a15e-4712-a778-b1845037495e")));
