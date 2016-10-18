@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,5 +66,6 @@ public class ConstructorRowMapperTest {
 		assertThat(row.getText(), equalTo("lorem ipsum..."));
 		assertThat(row.isMultiPartName(), equalTo(true));
 		assertThat(row.getUuid(), equalTo(UUID.fromString("b879edb0-a15e-4712-a778-b1845037495e")));
+		assertThat(row.getInstant(), equalTo(Instant.parse("2016-10-18T10:06:49.582Z")));
 	}
 }

@@ -11,10 +11,12 @@ CREATE TABLE complex (
   id              BIGINT,
   text            CLOB,
   multi_part_name BOOLEAN,
-  uuid            VARCHAR(36)
+  uuid            VARCHAR(36),
+  instant         TIMESTAMP
 );
 
-INSERT INTO complex VALUES (7, 'lorem ipsum...', TRUE, 'b879edb0-a15e-4712-a778-b1845037495e');
+INSERT INTO complex
+VALUES (7, 'lorem ipsum...', TRUE, 'b879edb0-a15e-4712-a778-b1845037495e', '2016-10-18 13:06:49.582');
 
 INSERT INTO simple VALUES (10, 'lorem ipsum...');
 INSERT INTO simple VALUES (10, 'lorem ipsum...');

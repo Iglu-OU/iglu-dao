@@ -1,5 +1,6 @@
 package ee.iglu.dao;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import lombok.AllArgsConstructor;
@@ -12,4 +13,5 @@ public class ComplexRow {
 	private String text;
 	private boolean multiPartName;
 	private UUID uuid;
+	private Instant instant;
 }
