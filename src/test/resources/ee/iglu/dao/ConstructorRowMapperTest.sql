@@ -10,10 +10,11 @@ DROP TABLE IF EXISTS complex;
 CREATE TABLE complex (
   id              BIGINT,
   text            CLOB,
-  multi_part_name BOOLEAN
+  multi_part_name BOOLEAN,
+  uuid            VARCHAR(36)
 );
 
-INSERT INTO complex VALUES (7, 'lorem ipsum...', TRUE);
+INSERT INTO complex VALUES (7, 'lorem ipsum...', TRUE, 'b879edb0-a15e-4712-a778-b1845037495e');
 
 INSERT INTO simple VALUES (10, 'lorem ipsum...');
 INSERT INTO simple VALUES (10, 'lorem ipsum...');

@@ -15,6 +15,7 @@ import com.google.common.base.Throwables;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 
@@ -23,19 +24,25 @@ import org.springframework.jdbc.support.JdbcUtils;
 public class ConstructorRowMapper<T> implements RowMapper<T> {
 
 	public ConstructorRowMapper(Class<T> rowClass) {
-		this(findConstructor(rowClass));
+		this(findConstructor(rowClass), null);
 	}
 
-	private ConstructorRowMapper(Constructor<T> constructor) {
+	public ConstructorRowMapper(Class<T> rowClass, ConversionService conversionService) {
+		this(findConstructor(rowClass), conversionService);
+	}
+
+	private ConstructorRowMapper(Constructor<T> constructor, ConversionService conversionService) {
 		this(
 				constructor,
 				constructor.getParameterTypes(),
-				constructor.getAnnotation(ConstructorProperties.class).value());
+				constructor.getAnnotation(ConstructorProperties.class).value(),
+				conversionService);
 	}
 
 	private final Constructor<T> constructor;
 	private final Class<?>[] parameterTypes;
 	private final String[] parameterNames;
+	private final ConversionService conversionService;
 
 	private int[] columnIndexes;
 
@@ -135,11 +142,22 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 			int columnIndex = columnIndexes[parameterIndex];
 			if (columnIndex != 0) {
 				Class<?> parameterType = parameterTypes[parameterIndex];
-				Object argument = JdbcUtils.getResultSetValue(rs, columnIndex, parameterType);
+				Object argument = getColumnValue(rs, columnIndex, parameterType);
 				arguments[parameterIndex] = argument;
 			}
 		}
 		return arguments;
+	}
+
+	private Object getColumnValue(ResultSet rs, int columnIndex, Class<?> parameterType) throws SQLException {
+		Object value = JdbcUtils.getResultSetValue(rs, columnIndex, parameterType);
+
+		if (value != null && !parameterType.isInstance(value)) {
+			log.debug("value type mismatch, expected {}, got {}", parameterType, value.getClass());
+			return conversionService.convert(value, parameterType);
+		}
+
+		return value;
 	}
 
 	private static <T> Constructor<T> findConstructor(Class<T> rowClass) {
