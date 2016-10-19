@@ -16,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 
@@ -24,7 +25,7 @@ import org.springframework.jdbc.support.JdbcUtils;
 public class ConstructorRowMapper<T> implements RowMapper<T> {
 
 	public ConstructorRowMapper(Class<T> rowClass) {
-		this(findConstructor(rowClass), null);
+		this(findConstructor(rowClass), new DefaultConversionService());
 	}
 
 	public ConstructorRowMapper(Class<T> rowClass, ConversionService conversionService) {

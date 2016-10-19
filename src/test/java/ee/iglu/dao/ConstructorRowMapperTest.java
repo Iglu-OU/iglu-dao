@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -56,8 +55,7 @@ public class ConstructorRowMapperTest {
 	@Test
 	public void test_complex_row() {
 
-		ConstructorRowMapper<ComplexRow> rowMapper =
-				new ConstructorRowMapper<>(ComplexRow.class, new DefaultConversionService());
+		ConstructorRowMapper<ComplexRow> rowMapper = new ConstructorRowMapper<>(ComplexRow.class);
 		List<ComplexRow> result = jdbcTemplate.query("SELECT * FROM complex", rowMapper);
 		assertThat(result, hasSize(1));
 
@@ -68,4 +66,5 @@ public class ConstructorRowMapperTest {
 		assertThat(row.getUuid(), equalTo(UUID.fromString("b879edb0-a15e-4712-a778-b1845037495e")));
 		assertThat(row.getInstant(), equalTo(Instant.parse("2016-10-18T10:06:49.582Z")));
 	}
+
 }
