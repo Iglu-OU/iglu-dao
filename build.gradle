@@ -56,6 +56,13 @@ dependencies {
     )
 }
 
+test {
+    testLogging {
+        events "failed"
+        exceptionFormat "full"
+    }
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion = '3.1'
 }
