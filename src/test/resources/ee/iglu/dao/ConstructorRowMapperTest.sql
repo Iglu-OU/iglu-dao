@@ -18,6 +18,8 @@ CREATE TABLE complex (
 INSERT INTO complex
 VALUES
   (7, 'lorem ipsum...', TRUE, 'b879edb0-a15e-4712-a778-b1845037495e',
+   TIMESTAMP('2016-10-18 13:06:49.582') + SESSION_TIMEZONE()),
+  (8, 'invalid null value for primitive', NULL, 'b879edb0-a15e-4712-a778-b1845037495e',
    TIMESTAMP('2016-10-18 13:06:49.582') + SESSION_TIMEZONE());
 
 INSERT INTO simple VALUES (10, 'lorem ipsum...');
