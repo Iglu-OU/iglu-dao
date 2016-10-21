@@ -45,8 +45,9 @@ public class ConstructorRowMapperPerfTest {
 				iterationsPerSample,
 				sampleSize,
 				new CustomSimpleRowMapper(),
-				new ConstructorRowMapper<>(SimpleRow.class),
-				new BeanPropertyRowMapper<>(SimpleRow.class));
+				new ConstructorRowMapper<>(SimpleRow.class)
+				, new BeanPropertyRowMapper<>(SimpleRow.class)
+		);
 	}
 
 	@Test
@@ -61,7 +62,7 @@ public class ConstructorRowMapperPerfTest {
 				sampleSize,
 				new CustomComplexRowMapper(),
 				new ConstructorRowMapper<>(ComplexRow.class)
-				//				,new BeanPropertyRowMapper<>(ComplexRow.class)
+				, new BeanPropertyRowMapper<>(ComplexRow.class)
 		);
 	}
 
