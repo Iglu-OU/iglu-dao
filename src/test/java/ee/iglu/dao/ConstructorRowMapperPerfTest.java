@@ -4,8 +4,10 @@ import static org.junit.Assert.fail;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.google.common.base.Stopwatch;
@@ -45,6 +47,22 @@ public class ConstructorRowMapperPerfTest {
 				new CustomSimpleRowMapper(),
 				new ConstructorRowMapper<>(SimpleRow.class),
 				new BeanPropertyRowMapper<>(SimpleRow.class));
+	}
+
+	@Test
+	//	@Ignore // un-ignore and run manually
+	public void test_complex_row_performance() {
+		String query = "SELECT * FROM complex";
+		int iterationsPerSample = 50000;
+		int sampleSize = 10;
+		measureRowMappersWithQuery(
+				query,
+				iterationsPerSample,
+				sampleSize,
+				new CustomComplexRowMapper(),
+				new ConstructorRowMapper<>(ComplexRow.class)
+				//				,new BeanPropertyRowMapper<>(ComplexRow.class)
+		);
 	}
 
 	private void measureRowMappersWithQuery(
@@ -122,7 +140,7 @@ public class ConstructorRowMapperPerfTest {
 				String.format("%.1f", standardDeviation),
 				String.format("%.1f", relativeStandardDeviation));
 
-		if (relativeStandardDeviation >= 0.5) {
+		if (relativeStandardDeviation >= 1.2) {
 			return -1;
 		}
 
@@ -147,4 +165,23 @@ public class ConstructorRowMapperPerfTest {
 		}
 	}
 
+	private static class CustomComplexRowMapper implements RowMapper<ComplexRow> {
+
+		@Override
+		public ComplexRow mapRow(ResultSet rs, int rowNum) throws SQLException {
+			Long idValue = (Long) JdbcUtils.getResultSetValue(rs, 1, Long.class);
+			String text = (String) JdbcUtils.getResultSetValue(rs, 2, String.class);
+			boolean multiPartName = (boolean) JdbcUtils.getResultSetValue(rs, 3, boolean.class);
+			String uuidValue = (String) JdbcUtils.getResultSetValue(rs, 4, String.class);
+			Timestamp timestamp = (Timestamp) JdbcUtils.getResultSetValue(rs, 5, Timestamp.class);
+
+			return new ComplexRow(
+					new CustomWrapper(idValue),
+					text,
+					multiPartName,
+					UUID.fromString(uuidValue),
+					timestamp.toInstant()
+			);
+		}
+	}
 }

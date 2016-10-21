@@ -165,7 +165,6 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 		}
 
 		if (!parameterType.isInstance(value)) {
-			log.debug("value type mismatch, expected {}, got {}", parameterType, value.getClass());
 			return conversionService.convert(value, parameterType);
 		}
 
