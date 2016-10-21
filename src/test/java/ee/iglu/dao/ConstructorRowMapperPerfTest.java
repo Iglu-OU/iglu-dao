@@ -51,7 +51,7 @@ public class ConstructorRowMapperPerfTest {
 	}
 
 	@Test
-	//	@Ignore // un-ignore and run manually
+	@Ignore // un-ignore and run manually
 	public void test_complex_row_performance() {
 		String query = "SELECT * FROM complex WHERE id = 7";
 		int iterationsPerSample = 50000;
