@@ -13,6 +13,7 @@ import java.util.*;
 
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Throwables;
+import com.google.common.primitives.Primitives;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -164,8 +165,11 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 			return null;
 		}
 
-		if (!parameterType.isInstance(value)) {
-			log.debug("value type mismatch, expected {}, got {}", parameterType, value.getClass());
+		// perf: because value is always a object, wrap primitives to avoid unnecessary calls to conversionService
+		// increased performance form +6.5% to +5% compared to a custom row mapper
+		Class<?> wrappedType = Primitives.wrap(parameterType);
+
+		if (!wrappedType.isInstance(value)) {
 			return conversionService.convert(value, parameterType);
 		}
 
