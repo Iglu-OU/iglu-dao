@@ -1,6 +1,7 @@
 package ee.iglu.dao;
 
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
 
 import java.beans.ConstructorProperties;
 import java.lang.reflect.Constructor;
@@ -153,7 +154,17 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 	private Object getColumnValue(ResultSet rs, int columnIndex, Class<?> parameterType) throws SQLException {
 		Object value = JdbcUtils.getResultSetValue(rs, columnIndex, parameterType);
 
-		if (value != null && !parameterType.isInstance(value)) {
+		if (value == null) {
+			checkState(!parameterType.isPrimitive(),
+					"cannot map null value to to primitive %s %s, "
+							+ "please consider using NOT NULL constraints on columns that map to primitives or use wrapper classes",
+					parameterType,
+					getParameterNameForColumn(rs.getMetaData(), columnIndex));
+
+			return null;
+		}
+
+		if (!parameterType.isInstance(value)) {
 			log.debug("value type mismatch, expected {}, got {}", parameterType, value.getClass());
 			return conversionService.convert(value, parameterType);
 		}

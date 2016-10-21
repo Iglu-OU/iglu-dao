@@ -56,7 +56,7 @@ public class ConstructorRowMapperTest {
 	public void test_complex_row() {
 
 		ConstructorRowMapper<ComplexRow> rowMapper = new ConstructorRowMapper<>(ComplexRow.class);
-		List<ComplexRow> result = jdbcTemplate.query("SELECT * FROM complex", rowMapper);
+		List<ComplexRow> result = jdbcTemplate.query("SELECT * FROM complex WHERE id = 7", rowMapper);
 		assertThat(result, hasSize(1));
 
 		ComplexRow row = result.get(0);
@@ -67,4 +67,19 @@ public class ConstructorRowMapperTest {
 		assertThat(row.getInstant(), equalTo(Instant.parse("2016-10-18T13:06:49.582Z")));
 	}
 
+	@Test
+	public void mapping_null_to_primitive_fails() {
+
+		ConstructorRowMapper<ComplexRow> rowMapper = new ConstructorRowMapper<>(ComplexRow.class);
+		try {
+			List<ComplexRow> query = jdbcTemplate.query("SELECT * FROM complex WHERE id = 8", rowMapper);
+			System.out.println(query);
+		} catch (IllegalStateException e) {
+			assertThat(e.getMessage(), containsString("primitive boolean"));
+			assertThat(e.getMessage(), containsString("multiPartName"));
+			return;
+		}
+
+		fail("Expected exception");
+	}
 }
