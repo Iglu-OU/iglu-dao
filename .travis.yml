@@ -15,6 +15,10 @@ before_script:
 env:
   - SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5432/travis_test?user=postgres
 
+script:
+  - ./gradlew check
+  - ./gradlew codeCoverageReport
+
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
