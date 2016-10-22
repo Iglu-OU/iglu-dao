@@ -2,25 +2,25 @@ DROP TABLE IF EXISTS simple;
 
 CREATE TABLE simple (
   id   BIGINT,
-  text CLOB
+  text TEXT
 );
 
 DROP TABLE IF EXISTS complex;
 
 CREATE TABLE complex (
   id              BIGINT,
-  text            CLOB,
+  text            TEXT,
   multi_part_name BOOLEAN,
-  uuid            VARCHAR(36),
+  uuid            UUID,
   instant         TIMESTAMP
 );
 
 INSERT INTO complex
 VALUES
   (7, 'lorem ipsum...', TRUE, 'b879edb0-a15e-4712-a778-b1845037495e',
-   TIMESTAMP('2016-10-18 13:06:49.582') + SESSION_TIMEZONE()),
+   TIMESTAMP WITH TIME ZONE '2016-10-18 13:06:49.582Z'),
   (8, 'invalid null value for primitive', NULL, 'b879edb0-a15e-4712-a778-b1845037495e',
-   TIMESTAMP('2016-10-18 13:06:49.582') + SESSION_TIMEZONE());
+   TIMESTAMP WITH TIME ZONE '2016-10-18 13:06:49.582Z');
 
 INSERT INTO simple VALUES (10, 'lorem ipsum...');
 INSERT INTO simple VALUES (10, 'lorem ipsum...');

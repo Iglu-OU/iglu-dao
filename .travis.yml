@@ -3,6 +3,18 @@ language: java
 jdk:
   - oraclejdk8
 
+services:
+  - postgresql
+
+addons:
+  postgresql: "9.4"
+
+before_script:
+  - psql -c 'create database travis_test;' -U postgres
+
+env:
+  - SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5432/travis_test?user=postgres
+
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
