@@ -52,7 +52,8 @@ dependencies {
     )
 
     testRuntime(
-            'org.hsqldb:hsqldb'
+            'org.hsqldb:hsqldb',
+            'org.postgresql:postgresql:9.4.1211',
     )
 }
 

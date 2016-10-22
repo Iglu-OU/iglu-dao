@@ -1,3 +1,14 @@
+machine:
+
+  java:
+    version: oraclejdk8
+
+  services:
+    - postgresql
+
+  environment:
+    SPRING_DATASOURCE_URL: jdbc:postgresql://ubuntu:@127.0.0.1:5432/circle_test
+
 test:
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
