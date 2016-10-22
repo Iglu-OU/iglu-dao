@@ -12,7 +12,7 @@ machine:
 
 dependencies:
   override:
-    - ./gradlew classes testClasses
+    - ./gradlew resolveDependencies
 
 test:
   post:
