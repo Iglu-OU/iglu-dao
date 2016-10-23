@@ -14,9 +14,11 @@ buildscript {
 
 plugins {
     id 'io.spring.dependency-management' version '0.6.1.RELEASE'
+    id "org.sonarqube" version "2.2"
 }
 
 apply plugin: 'java'
+apply plugin: 'jacoco'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -61,6 +63,19 @@ test {
     testLogging {
         events "failed"
         exceptionFormat "full"
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}
+
+sonarqube {
+    properties {
+        property "sonar.host.url", "https://sonarqube.com/"
+        property "sonar.login", System.getenv('SONAR_LOGIN')
     }
 }
 

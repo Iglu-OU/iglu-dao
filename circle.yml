@@ -18,3 +18,7 @@ test:
   post:
     - mkdir -p $CIRCLE_TEST_REPORTS/junit/
     - find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
+    - if [ -e ./gradlew ]; then ./gradlew jacocoTestReport;else gradle jacocoTestReport;fi
+    - cp -r ./build/reports/ $CIRCLE_ARTIFACTS/
+    - bash <(curl -s https://codecov.io/bash)
+    - if [ -e ./gradlew ]; then ./gradlew sonarqube;else gradle sonarqube;fi
