@@ -75,7 +75,7 @@ jacocoTestReport {
 sonarqube {
     properties {
         property "sonar.host.url", "https://sonarqube.com/"
-        property "sonar.login", System.getevn('SONAR_LOGIN')
+        property "sonar.login", System.getenv('SONAR_LOGIN')
     }
 }
 
