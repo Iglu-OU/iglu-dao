@@ -26,6 +26,13 @@ import org.springframework.jdbc.support.JdbcUtils;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class ConstructorRowMapper<T> implements RowMapper<T> {
 
+	private final Constructor<T> constructor;
+	private final Class<?>[] parameterTypes;
+	private final String[] parameterNames;
+	private final ConversionService conversionService;
+
+	private int[] columnIndexes;
+
 	public ConstructorRowMapper(Class<T> rowClass) {
 		this(findConstructor(rowClass), new DefaultConversionService());
 	}
@@ -41,13 +48,6 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 				constructor.getAnnotation(ConstructorProperties.class).value(),
 				conversionService);
 	}
-
-	private final Constructor<T> constructor;
-	private final Class<?>[] parameterTypes;
-	private final String[] parameterNames;
-	private final ConversionService conversionService;
-
-	private int[] columnIndexes;
 
 	@Override
 	public T mapRow(ResultSet rs, int rowNum) throws SQLException {
