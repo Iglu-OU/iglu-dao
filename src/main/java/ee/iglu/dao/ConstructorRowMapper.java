@@ -34,7 +34,7 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 	private int[] columnIndexes;
 
 	public ConstructorRowMapper(Class<T> rowClass) {
-		this(findConstructor(rowClass), new DefaultConversionService());
+		this(rowClass, new DefaultConversionService());
 	}
 
 	public ConstructorRowMapper(Class<T> rowClass, ConversionService conversionService) {
