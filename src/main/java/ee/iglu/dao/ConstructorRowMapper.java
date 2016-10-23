@@ -5,7 +5,6 @@ import static com.google.common.base.Preconditions.checkState;
 
 import java.beans.ConstructorProperties;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -59,11 +58,7 @@ public class ConstructorRowMapper<T> implements RowMapper<T> {
 
 		try {
 			return constructor.newInstance(arguments);
-		} catch (InstantiationException e) {
-			throw Throwables.propagate(e);
-		} catch (IllegalAccessException e) {
-			throw Throwables.propagate(e);
-		} catch (InvocationTargetException e) {
+		} catch (Exception e) {
 			throw Throwables.propagate(e);
 		}
 	}
