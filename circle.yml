@@ -21,3 +21,4 @@ test:
     - if [ -e ./gradlew ]; then ./gradlew jacocoTestReport;else gradle jacocoTestReport;fi
     - cp -r ./build/reports/ $CIRCLE_ARTIFACTS/
     - bash <(curl -s https://codecov.io/bash)
+    - if [ -e ./gradlew ]; then ./gradlew sonarqube;else gradle sonarqube;fi
